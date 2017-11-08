@@ -176,7 +176,6 @@ public class ViewerMainFragment extends Fragment {
 
             initUIElements();
 
-//            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
             //Init slicing elements
@@ -193,35 +192,6 @@ public class ViewerMainFragment extends Fragment {
 
                     Rect r = new Rect();
                     mRootView.getWindowVisibleDisplayFrame(r);
-
-                    if (mSurface.getEditionMode() == ViewerSurfaceView.SCALED_EDITION_MODE){
-
-                        int[] location = new int[2];
-                        int heightDiff = mRootView.getRootView().getHeight() - (r.bottom - r.top);
-
-                        if (heightDiff > 100) { // if more than 100 pixels, its probably a keyboard...
-
-                            if (!isKeyboardShown) {
-                                isKeyboardShown = true;
-                                mActionModePopupWindow.getContentView().getLocationInWindow(location);
-
-                                if (Build.VERSION.SDK_INT >= 19)
-                                    mActionModePopupWindow.update(location[0], location[1] - MENU_HIDE_OFFSET_SMALL);
-                                else  mActionModePopupWindow.update(location[0], location[1] + MENU_HIDE_OFFSET_BIG);
-                            }
-                        } else {
-                            if (isKeyboardShown) {
-                                isKeyboardShown = false;
-                                mActionModePopupWindow.getContentView().getLocationInWindow(location);
-
-                                if (Build.VERSION.SDK_INT >= 19)
-                                    mActionModePopupWindow.update(location[0], location[1] + MENU_HIDE_OFFSET_SMALL);
-                                else  mActionModePopupWindow.update(location[0], location[1] - MENU_HIDE_OFFSET_BIG);
-
-                            }
-
-                        }
-                    }
 
                 }
             });
@@ -357,41 +327,6 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-//    /**
-//     * Change the current rotation axis and update the text accordingly
-//     * <p/>
-//     * Alberto
-//     */
-//    public static void changeCurrentAxis(int currentAxis) {
-//
-//        mCurrentAxis = currentAxis;
-//
-//        float currentAngle = 12;
-//
-//        switch (mCurrentAxis) {
-//
-//            case 0:
-//                mRotationSlider.setBackgroundColor(Color.GREEN);
-//                break;
-//
-//            case 1:
-//                mRotationSlider.setBackgroundColor(Color.RED);
-//                break;
-//            case 2:
-//                mRotationSlider.setBackgroundColor(Color.BLUE);
-//                break;
-//            default:
-//                mRotationSlider.setBackgroundColor(Color.TRANSPARENT);
-//                break;
-//
-//        }
-//
-//        mSurface.setRendererAxis(mCurrentAxis);
-//
-//        mRotationSlider.setValue((int) currentAngle);
-//
-//    }
-
 
     /**
      * Open a dialog if it's a GCODE to warn the user about unsaved data loss
@@ -445,15 +380,6 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-
-    //Select the last object added
-    public static void doPress(){
-
-        mSurface.doPress(mDataList.size() - 1);
-
-    }
-
-
     public static void openFile(String filePath) {
         DataStorage data = null;
         //Open the file
@@ -461,7 +387,6 @@ public class ViewerMainFragment extends Fragment {
 
             data = new DataStorage();
 
-//            mVisibilityModeButton.setVisibility(View.VISIBLE);
             mFile = new File(filePath);
             StlFile.openStlFile(mContext, mFile, data, DONT_SNAPSHOT);
             mCurrentViewMode = NORMAL;
@@ -469,10 +394,6 @@ public class ViewerMainFragment extends Fragment {
         } else if (LibraryController.hasExtension(1, filePath)) {
 
             data = new DataStorage();
-            if (!filePath.contains("/temp")) {
-//                mVisibilityModeButton.setVisibility(View.GONE);
-
-            }
             mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
             mCurrentViewMode = LAYER;
@@ -497,24 +418,17 @@ public class ViewerMainFragment extends Fragment {
                 }
             }
             Geometry.relocateIfOverlaps(mDataList);
-//            mSeekBar.setVisibility(View.INVISIBLE);
 
         } else if (LibraryController.hasExtension(1, filePath)) {
             if (mDataList.size() > 1)
                 while (mDataList.size() > 1) {
                     mDataList.remove(0);
                 }
-//            mSeekBar.setVisibility(View.VISIBLE);
         }
 
         //Add the view
         mLayout.removeAllViews();
         mLayout.addView(mSurface, 0);
-//        mLayout.addView(mSeekBar, 1);
-//        mLayout.addView(mSizeText, 1);
-
-//      mLayout.addView(mUndoButtonBar, 3);
-//      mLayout.addView(mEditionLayout, 2);
     }
 
     /**
@@ -534,105 +448,6 @@ public class ViewerMainFragment extends Fragment {
                     break;
             }
         }
-    }
-
-    private static PopupWindow mActionModePopupWindow;
-    private static PopupWindow mCurrentActionPopupWindow;
-
-    /**
-     * ********************** ACTION MODE *******************************
-     */
-
-    /**
-     * Show a pop up window with the available actions of the item
-     */
-    public static void showActionModePopUpWindow() {
-
-        hideCurrentActionPopUpWindow();
-
-
-        if (mActionModePopupWindow == null) {
-
-            //Get the content view of the pop up window
-            final LinearLayout popupLayout = (LinearLayout) ((Activity) mContext).getLayoutInflater()
-                    .inflate(R.layout.item_edit_popup_menu, null);
-            popupLayout.measure(0, 0);
-
-            //Set the behavior of the action buttons
-            int imageButtonHeight = 0;
-            for (int i = 0; i < popupLayout.getChildCount(); i++) {
-                View v = popupLayout.getChildAt(i);
-                if (v instanceof ImageButton) {
-                    ImageButton ib = (ImageButton) v;
-                    imageButtonHeight = ib.getMeasuredHeight();
-                    ib.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-//                            onActionItemSelected((ImageButton) view);
-                        }
-                    });
-                }
-            }
-
-            //Show the pop up window in the correct position
-            int[] viewerContainerCoordinates = new int[2];
-            mLayout.getLocationOnScreen(viewerContainerCoordinates);
-            int popupLayoutPadding = (int) mContext.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
-            int popupLayoutWidth = popupLayout.getMeasuredWidth();
-            int popupLayoutHeight = popupLayout.getMeasuredHeight();
-            final int popupLayoutX = viewerContainerCoordinates[0] + mLayout.getWidth() - popupLayoutWidth;
-            final int popupLayoutY = viewerContainerCoordinates[1] + imageButtonHeight + popupLayoutPadding;
-
-            mActionModePopupWindow = (new CustomPopupWindow(popupLayout, popupLayoutWidth,
-                    popupLayoutHeight, R.style.SlideRightAnimation).getPopupWindow());
-
-            mActionModePopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY,
-                    popupLayoutX, popupLayoutY);
-
-        }
-    }
-
-    /**
-     * Hide the action mode pop up window
-     */
-    public static void hideActionModePopUpWindow() {
-        if (mActionModePopupWindow != null) {
-            mActionModePopupWindow.dismiss();
-            mSurface.exitEditionMode();
-            mRotationLayout.setVisibility(View.GONE);
-            mScaleLayout.setVisibility(View.GONE);
-            mStatusBottomBar.setVisibility(View.VISIBLE);
-            mBottomBar.setVisibility(View.INVISIBLE);
-            mActionModePopupWindow = null;
-            mSurface.setRendererAxis(-1);
-        }
-
-//        //Hide size text
-//        if (mSizeText != null)
-//            if (mSizeText.getVisibility() == View.VISIBLE) mSizeText.setVisibility(View.INVISIBLE);
-
-        //hideCurrentActionPopUpWindow();
-    }
-
-    /**
-     * Hide the current action pop up window if it is showing
-     */
-    public static void hideCurrentActionPopUpWindow() {
-        if (mCurrentActionPopupWindow != null) {
-            mCurrentActionPopupWindow.dismiss();
-            mCurrentActionPopupWindow = null;
-        }
-        hideSoftKeyboard();
-    }
-
-    public static void hideSoftKeyboard() {
-        try{
-            InputMethodManager inputMethodManager = (InputMethodManager)  mContext.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(((Activity)mContext).getCurrentFocus().getWindowToken(), 0);
-        } catch (NullPointerException e){
-
-        }
-
     }
 
     /**

@@ -159,8 +159,8 @@ public class MainActivity extends ActionBarActivity {
 
         if (id!= 1) {
 
-            ViewerMainFragment.hideActionModePopUpWindow();
-            ViewerMainFragment.hideCurrentActionPopUpWindow();
+//            ViewerMainFragment.hideActionModePopUpWindow();
+//            ViewerMainFragment.hideCurrentActionPopUpWindow();
         }
 
         Log.i("OUT", "Pressed " + id);

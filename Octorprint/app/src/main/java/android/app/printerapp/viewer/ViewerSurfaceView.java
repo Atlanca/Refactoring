@@ -156,32 +156,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		requestRender();
 	}
 
-	/**
-	 * Show/Hide back Witbox Face
-	 */
-	public void showBackWitboxFace () {
-		if (mRenderer.getShowBackWitboxFace()) mRenderer.showBackWitboxFace(false);
-		else mRenderer.showBackWitboxFace(true);
-		requestRender();
-	}
-
-	public void showRightWitboxFace () {
-		if (mRenderer.getShowRightWitboxFace()) mRenderer.showRightWitboxFace(false);
-		else mRenderer.showRightWitboxFace(true);
-		requestRender();
-	}
-
-	public void showLeftWitboxFace () {
-		if (mRenderer.getShowLeftWitboxFace()) mRenderer.showLeftWitboxFace(false);
-		else mRenderer.showLeftWitboxFace(true);
-		requestRender();
-	}
-
-	public void showDownWitboxFace () {
-		if (mRenderer.getShowDownWitboxFace()) mRenderer.showDownWitboxFace(false);
-		else mRenderer.showDownWitboxFace(true);
-		requestRender();
-	}
 
 	/**
 	 * Tells the render if overhang is activated or not
@@ -207,29 +181,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setXray(xray);
 	}
 
-	/**
-	 * Set edition mode
-	 * @param mode MOVE_EDITION_MODE, ROTATION_EDITION_MODE, SCALED_EDITION_MODE, MIRROR_EDITION_MODE
-	 */
-	public void setEditionMode (int mode) {
-		mEditionMode = mode;
-	}
     public int getEditionMode(){ return mEditionMode; }
-
-	/**
-	 * Delete selected object
-	 */
-	public void deleteObject() {
-		mRenderer.deleteObject(mObjectPressed);
-	}
-
-	/**
-	 * Get the object that has been pressed
-	 * @return mObjectPressed
-	 */
-	public int getObjectPresed () {
-		return mObjectPressed;
-	}
 
 	/**
 	 * Set the rotation axis
@@ -270,7 +222,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[0] = mCurrentAngle[0] + (angle - mCurrentAngle[0]);
 
 		mRenderer.setRotationObject (rotation);
-	    //mRenderer.refreshRotatedObjectCoordinates();
 
 	}
 
@@ -285,7 +236,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[1] = mCurrentAngle[1] + (angle - mCurrentAngle[1]);
 
 		mRenderer.setRotationObject (rotation);
-		//mRenderer.refreshRotatedObjectCoordinates();
 	}
 
 	/**
@@ -299,49 +249,8 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mCurrentAngle[2] = mCurrentAngle[2] + (angle - mCurrentAngle[2]);
 
         mRenderer.setRotationObject (rotation);
-        //mRenderer.refreshRotatedObjectCoordinates();
 	}
 
-    /*
-    Refresh only when the user stops tracking the angle
-     */
-    public void refreshRotatedObject(){
-
-        mRenderer.refreshRotatedObjectCoordinates();
-
-    }
-
-    /*
-    Set new axis to request a render from here
-     */
-    public void setRendererAxis(int axis){
-        mRenderer.setCurrentaxis(axis);
-        requestRender();
-
-    }
-
-    /*
-    Change plate coords
-     */
-    public void changePlate(int[] type){
-
-        mRenderer.generatePlate(type);
-
-    }
-
-    public void doPress(int i){
-
-
-
-        mRenderer.setObjectPressed(i);
-        mRenderer.changeTouchedState();
-        mEdition = true;
-        mObjectPressed=i;
-        ViewerMainFragment.showActionModePopUpWindow();
-//        ViewerMainFragment.displayModelSize(mObjectPressed);
-
-        touchMode = TOUCH_DRAG;
-    }
 
 	/**
 	 * On touch events
@@ -393,31 +302,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
                 mPreviousDragY = mPreviousY;
 
                 if (mMode!= ViewerMainFragment.PRINT_PREVIEW){
-
-                    if (touchMode == TOUCH_NONE && event.getPointerCount() == 1) {
-                        int objPressed = mRenderer.objectPressed(normalizedX, normalizedY);
-                        if (objPressed!=-1 && isStl()) {
-                            mEdition = true;
-                            mObjectPressed=objPressed;
-                            ViewerMainFragment.showActionModePopUpWindow();
-//                            ViewerMainFragment.displayModelSize(mObjectPressed);
-
-                            Geometry.Point p = mDataList.get(mObjectPressed).getLastCenter();
-
-                            //Move the camera to the initial values once per frame
-                            while (!mRenderer.restoreInitialCameraPosition(p.x,p.y, true, false)){
-                                requestRender();
-                            };
-
-
-                        }
-                        else {
-
-                            ViewerMainFragment.hideActionModePopUpWindow();
-                            ViewerMainFragment.hideCurrentActionPopUpWindow();
-                        }
-
-                    }
 
                 /*
                 Detect double-tapping to restore the panel
@@ -535,45 +419,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		}
 		return true;
 	}
-
-	/**
-	 * Exit edition mode.
-	 * Set object pressed to -1 (no object pressed)
-	 * Set mEditionMode to NONE_EDITION_MODE
-	 * Change state of the object (which means the colour of the models in the plate will probably change)
-	 */
-	public void exitEditionMode () {
-
-        //We can exit edition mode at clicking in the menu or at deleting a model. If the model has been deleted, it is possible that
-        //mRenderer.exitEditionModel fails because of the size of the arrays.
-
-        mEdition = false;
-        mEditionMode = NONE_EDITION_MODE;
-
-
-
-        //Delay the render slightly to avoid inconsistency while drawing models
-        Handler handler = new Handler();
-
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                mObjectPressed = -1;
-                mRenderer.setObjectPressed(mObjectPressed);
-
-
-                mRenderer.changeTouchedState();
-
-
-                requestRender();
-
-            }
-        }, 100);
-
-
-	}
 		
 	/**
 	 * It rotates the plate (ROTATION or TRANSLATION) 
@@ -636,17 +481,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         }
     }
 	
-	/**
-	 * Mirror option
-	 */
-	/*public void doMirror () {
-		float fx = mDataList.get(mObjectPressed).getLastScaleFactorX();
-		float fy = mDataList.get(mObjectPressed).getLastScaleFactorY();
-		float fz = mDataList.get(mObjectPressed).getLastScaleFactorZ();
-		
-		mRenderer.scaleObject(-1*fx, fy, fz);
-		requestRender();
-	}*/
+
 	
 	/**
 	 * Do rotation (plate rotation, not model rotation)
