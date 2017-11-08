@@ -358,32 +358,18 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			minY = (minY+(mScaleFactorY-lastScaleFactorY)*(minY/lastScaleFactorY))+lastCenter.y;
 			minZ = (minZ+(mScaleFactorZ-lastScaleFactorZ)*(minZ/lastScaleFactorZ))+lastCenter.z;
 
-            //Out of the plate
-            if (maxX > mPlate[0] || minX < -mPlate[0]
-                    || maxY > mPlate[1] || minY < -mPlate[1]) {
+			data.setMaxX(maxX);
+			data.setMaxY(maxY);
+			data.setMaxZ(maxZ);
 
-                if (error){
-                    if (maxX > mPlate[0] || minX < -mPlate[0]) ViewerMainFragment.displayErrorInAxis(0);
-                    if (maxY > mPlate[1] || minY < -mPlate[1]) ViewerMainFragment.displayErrorInAxis(1);
-                }
+			data.setMinX(minX);
+			data.setMinY(minY);
+			data.setMinZ(minZ);
 
+			data.setLastScaleFactorX(mScaleFactorX);
+			data.setLastScaleFactorY(mScaleFactorY);
+			data.setLastScaleFactorZ(mScaleFactorZ);
 
-                return;
-
-            }else {
-
-                data.setMaxX(maxX);
-                data.setMaxY(maxY);
-                data.setMaxZ(maxZ);
-
-                data.setMinX(minX);
-                data.setMinY(minY);
-                data.setMinZ(minZ);
-
-                data.setLastScaleFactorX(mScaleFactorX);
-                data.setLastScaleFactorY(mScaleFactorY);
-                data.setLastScaleFactorZ(mScaleFactorZ);
-            }
 
 
 		}

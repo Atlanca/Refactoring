@@ -1,82 +1,21 @@
 package android.app.printerapp.viewer;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.app.Fragment;
-import android.app.printerapp.Log;
-import android.app.printerapp.MainActivity;
 import android.app.printerapp.R;
-import android.app.printerapp.devices.database.DatabaseController;
 import android.app.printerapp.library.LibraryController;
-import android.app.printerapp.model.ModelProfile;
-import android.app.printerapp.util.ui.CustomEditableSlider;
-import android.app.printerapp.util.ui.CustomPopupWindow;
-import android.app.printerapp.util.ui.ListIconPopupWindowAdapter;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.NumberPicker;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
-import android.widget.RadioGroup;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.devsmart.android.ui.HorizontalListView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
 
 public class ViewerMainFragment extends Fragment {
     //Tabs
@@ -95,18 +34,11 @@ public class ViewerMainFragment extends Fragment {
     public static final boolean STL = true;
     public static final boolean GCODE = false;
 
-    private static final float POSITIVE_ANGLE = 15;
-    private static final float NEGATIVE_ANGLE = -15;
-
-    private static final int MENU_HIDE_OFFSET_SMALL = 20;
-    private static final int MENU_HIDE_OFFSET_BIG = 1000;
-
     //Variables
     private static File mFile;
 
     private static ViewerSurfaceView mSurface;
     private static FrameLayout mLayout;
-    private boolean isKeyboardShown = false;
 
     private static List<DataStorage> mDataList = new ArrayList<DataStorage>();
 
@@ -114,31 +46,14 @@ public class ViewerMainFragment extends Fragment {
     private static Context mContext;
     private static View mRootView;
 
-    private static LinearLayout mStatusBottomBar;
-    private static FrameLayout mBottomBar;
-    private static LinearLayout mRotationLayout;
-    private static LinearLayout mScaleLayout;
-    private static CustomEditableSlider mRotationSlider;
-//    private static ImageView mActionImage;
-
-    private static EditText mScaleEditX;
-    private static EditText mScaleEditY;
-    private static EditText mScaleEditZ;
-    private static ImageButton mUniformScale;
-
-    private static ScaleChangeListener mTextWatcherX;
-    private static ScaleChangeListener mTextWatcherY;
-    private static ScaleChangeListener mTextWatcherZ;
-
     /**
      * ****************************************************************************
      */
     private static int mCurrentType = WitboxFaces.TYPE_WITBOX;
-    ;
-    private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
-    ;
 
-    private static int mCurrentAxis;
+    private static int[] mCurrentPlate = new int[]{WitboxFaces.WITBOX_LONG, WitboxFaces.WITBOX_WITDH, WitboxFaces.WITBOX_HEIGHT};
+
+
 
     //Empty constructor
     public ViewerMainFragment() {
@@ -218,7 +133,6 @@ public class ViewerMainFragment extends Fragment {
 
         }
 
-
     }
 
     /**
@@ -226,45 +140,7 @@ public class ViewerMainFragment extends Fragment {
      */
 
     private void initUIElements() {
-
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
-
-        mStatusBottomBar = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
-        mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
-        mScaleLayout  = (LinearLayout) mRootView.findViewById(R.id.model_button_scale_bar_linearlayout);
-
-        mTextWatcherX = new ScaleChangeListener(0);
-        mTextWatcherY = new ScaleChangeListener(1);
-        mTextWatcherZ = new ScaleChangeListener(2);
-
-        mScaleEditX = (EditText) mScaleLayout.findViewById(R.id.scale_bar_x_edittext);
-        mScaleEditY = (EditText) mScaleLayout.findViewById(R.id.scale_bar_y_edittext);
-        mScaleEditZ = (EditText) mScaleLayout.findViewById(R.id.scale_bar_z_edittext);
-        mUniformScale = (ImageButton) mScaleLayout.findViewById(R.id.scale_uniform_button);
-        mUniformScale.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (mUniformScale.isSelected()){
-                    mUniformScale.setSelected(false);
-                } else {
-                    mUniformScale.setSelected(true);
-                }
-
-
-            }
-        });
-        mUniformScale.setSelected(true);
-
-        mScaleEditX.addTextChangedListener(mTextWatcherX);
-        mScaleEditY.addTextChangedListener(mTextWatcherY);
-        mScaleEditZ.addTextChangedListener(mTextWatcherZ);
-
-        mStatusBottomBar.setVisibility(View.VISIBLE);
-        mBottomBar = (FrameLayout) mRootView.findViewById(R.id.bottom_bar);
-        mBottomBar.setVisibility(View.INVISIBLE);
-        mCurrentAxis = -1;
-
     }
 
 
@@ -401,91 +277,5 @@ public class ViewerMainFragment extends Fragment {
     public static int[] getCurrentPlate() {
         return mCurrentPlate;
     }
-
-    /********************************* RESTORE PANEL *************************/
-
-    public static void displayErrorInAxis(int axis){
-
-        if (mScaleLayout.getVisibility() == View.VISIBLE){
-            switch (axis){
-
-                case 0: mScaleEditX.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[0] * 2));
-                    break;
-
-                case 1: mScaleEditY.setError(mContext.getResources().getString(R.string.viewer_error_bigger_plate,mCurrentPlate[1] * 2));
-                    break;
-
-            }
-        }
-
-
-    }
-
-    private class ScaleChangeListener implements TextWatcher{
-
-        int mAxis;
-
-        private ScaleChangeListener(int axis){
-
-            mAxis = axis;
-
-        }
-
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-            mScaleEditX.setError(null);
-            mScaleEditY.setError(null);
-            mScaleEditZ.setError(null);
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-            boolean valid = true;
-
-
-            //Check decimals
-           if (editable.toString().endsWith(".")){
-               valid = false;
-
-            }
-
-
-            if (valid)
-            try{
-                switch (mAxis){
-
-                    case 0:
-                        mSurface.doScale(Float.parseFloat(editable.toString()), 0, 0, mUniformScale.isSelected());
-                        break;
-
-                    case 1:
-                        mSurface.doScale(0, Float.parseFloat(editable.toString()), 0, mUniformScale.isSelected());
-                        break;
-
-                    case 2:
-                        mSurface.doScale(0, 0, Float.parseFloat(editable.toString()), mUniformScale.isSelected());
-                        break;
-
-                }
-            } catch (NumberFormatException e){
-
-                e.printStackTrace();
-
-            }
-
-
-
-        }
-    }
-
 
 }

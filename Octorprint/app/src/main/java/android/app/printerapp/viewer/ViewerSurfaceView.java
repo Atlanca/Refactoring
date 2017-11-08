@@ -1,11 +1,9 @@
 package android.app.printerapp.viewer;
 
-import android.app.printerapp.Log;
-import android.app.printerapp.viewer.Geometry.Vector;
+
 import android.content.Context;
 import android.graphics.PointF;
 import android.opengl.GLSurfaceView;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -61,24 +59,9 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 	//Edition mode
 	private boolean mEdition = false;
-	private int mEditionMode;
-	private int mRotateMode;
-
-
-	//Edition modes
-	public static final int NONE_EDITION_MODE = 0;
-	public static final int MOVE_EDITION_MODE = 1;
-	public static final int ROTATION_EDITION_MODE =2;
-	public static final int SCALED_EDITION_MODE = 3;
-	public static final int MIRROR_EDITION_MODE = 4;
-
-	public static final int ROTATE_X = 0;
-	public static final int ROTATE_Y = 1;
-	public static final int ROTATE_Z = 2;
 
 	private int mObjectPressed = -1;
 
-    private float[] mCurrentAngle = {0,0,0};
 
 	public ViewerSurfaceView(Context context) {
 	    super(context);
@@ -112,17 +95,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
 		// Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-	}
-
-	/**
-	 * Check if it is an stl model.
-	 * @return
-	 */
-	private boolean isStl() {
-		if (mDataList.size()>0)
-			if (mDataList.get(0).getPathFile().endsWith(".stl") || mDataList.get(0).getPathFile().endsWith(".STL")) return true;
-
-		return false;
 	}
 
 	/**
@@ -181,89 +153,14 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		mRenderer.setXray(xray);
 	}
 
-    public int getEditionMode(){ return mEditionMode; }
-
-	/**
-	 * Set the rotation axis
-	 * @param mode ROTATION_X, ROTATION_Y, ROTATION_Z
-	 */
-	public void setRotationVector (int mode) {
-		switch (mode) {
-
-		case ROTATE_X:
-			mRotateMode = ROTATE_X;
-			mRenderer.setRotationVector(new Vector (1,0,0));
-			break;
-		case ROTATE_Y:
-			mRotateMode = ROTATE_Y;
-			mRenderer.setRotationVector(new Vector (0,1,0));
-			break;
-		case ROTATE_Z:
-			mRotateMode = ROTATE_Z;
-			mRenderer.setRotationVector(new Vector (0,0,1));
-			break;
-
-
-		}
-
-        //Reset current angle to do a new calculation on 0º
-        mCurrentAngle = new float[]{0, 0, 0};
-	}
-
-
-	/**
-	 * Rotate the object in the X axis
-	 * @param angle angle to rotate
-	 */
-	public void rotateAngleAxisX (float angle) {
-		if (mRotateMode!=ROTATE_X)	setRotationVector(ROTATE_X);
-
-        float rotation = angle - mCurrentAngle[0];
-        mCurrentAngle[0] = mCurrentAngle[0] + (angle - mCurrentAngle[0]);
-
-		mRenderer.setRotationObject (rotation);
-
-	}
-
-	/**
-	 * Rotate the object in the Y axis
-	 * @param angle angle to rotate
-	 */
-	public void rotateAngleAxisY (float angle) {
-		if (mRotateMode!=ROTATE_Y) setRotationVector(ROTATE_Y);
-
-        float rotation = angle - mCurrentAngle[1];
-        mCurrentAngle[1] = mCurrentAngle[1] + (angle - mCurrentAngle[1]);
-
-		mRenderer.setRotationObject (rotation);
-	}
-
-	/**
-	 * Rotate the object in the Z axis
-	 * @param angle angle to rotate
-	 */
-	public void rotateAngleAxisZ (float angle) {
-		if (mRotateMode!=ROTATE_Z) setRotationVector(ROTATE_Z);
-
-        float rotation = angle - mCurrentAngle[2];
-        mCurrentAngle[2] = mCurrentAngle[2] + (angle - mCurrentAngle[2]);
-
-        mRenderer.setRotationObject (rotation);
-	}
-
-
 	/**
 	 * On touch events
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		//if (mMode == ViewerMainFragment.PRINT_PREVIEW) return false;
 
 		float x = event.getX();
         float y = event.getY();
-
-        float normalizedX = (event.getX() / (float) mRenderer.getWidthScreen()) * 2 - 1;
-		float normalizedY = -((event.getY() / (float) mRenderer.getHeightScreen()) * 2 - 1);
 
 		switch (event.getAction() & MotionEvent.ACTION_MASK) {
 			// starts pinch
@@ -343,35 +240,22 @@ public class ViewerSurfaceView extends GLSurfaceView{
                         mPreviousX = pt.x;
                         mPreviousY = pt.y;
 
-                        if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
-                            float fx = pinchStartFactorX*pinchScale;
-                            float fy = pinchStartFactorY*pinchScale;
-                            float fz = pinchStartFactorZ*pinchScale;
+						/**
+						 * Zoom controls will be limited to MIN and MAX
+						 */
 
-                            Log.i("Scale", "Scale touch @" + fx + ";" + fy + ";" + fz);
-                            mRenderer.scaleObject(fx,fy,fz, false);
-//                            ViewerMainFragment.displayModelSize(mObjectPressed);
-
-                        } else {
-
-                            /**
-                             * Zoom controls will be limited to MIN and MAX
-                             */
-
-                            if ((mRenderer.getCameraPosY() < MIN_ZOOM) && (pinchScale < 1.0)) {
+						if ((mRenderer.getCameraPosY() < MIN_ZOOM) && (pinchScale < 1.0)) {
 
 
-                            } else if ((mRenderer.getCameraPosY() > MAX_ZOOM) && (pinchScale > 1.0)){
+						} else if ((mRenderer.getCameraPosY() > MAX_ZOOM) && (pinchScale > 1.0)){
 
 
-                            } else{
-                                mRenderer.setCameraPosY(pinchStartY / pinchScale);
-                                mRenderer.setCameraPosZ(pinchStartZ / pinchScale);
-                            }
+						} else{
+							mRenderer.setCameraPosY(pinchStartY / pinchScale);
+							mRenderer.setCameraPosZ(pinchStartZ / pinchScale);
+						}
 
-                            requestRender();
-
-                        }
+						requestRender();
 
 
 					}
@@ -387,10 +271,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                         mPreviousDragX = x;
                         mPreviousDragY = y;
 
-
-                        if (mEdition && mEditionMode == MOVE_EDITION_MODE) {
-                            mRenderer.dragObject(normalizedX, normalizedY);
-                        } else 	if (!mEdition) dragAccordingToMode (dx,dy); //drag if there is no model
+						if (!mEdition) dragAccordingToMode (dx,dy); //drag if there is no model
 
 
                 }
@@ -437,51 +318,6 @@ public class ViewerSurfaceView extends GLSurfaceView{
 			break;
 		}
 	}
-
-    public void doScale(float x, float y, float z, boolean uniform){
-
-        if (mEdition && mEditionMode == SCALED_EDITION_MODE) {
-
-            float factorX = mDataList.get(mObjectPressed).getLastScaleFactorX();
-            float factorY = mDataList.get(mObjectPressed).getLastScaleFactorY();
-            float factorZ = mDataList.get(mObjectPressed).getLastScaleFactorZ();
-
-            DataStorage data = mDataList.get(mObjectPressed);
-
-            float scaleX = x / (data.getMaxX() - data.getMinX());
-            float scaleY = y / (data.getMaxY() - data.getMinY());
-            float scaleZ = z / (data.getMaxZ() - data.getMinZ());
-
-            float fx = factorX;
-            float fy = factorY;
-            float fz = factorZ;
-
-
-            if (!uniform){
-                if (x > 0) fx = factorX*scaleX;
-                if (y > 0) fy = factorY*scaleY;
-                if (z > 0) fz = factorZ*scaleZ;
-            } else {
-
-                if (x > 0) {
-                    fx = factorX*scaleX;  fy = fx; fz = fx;
-                }
-                if (y > 0) {
-                    fy = factorY*scaleY;  fx = fy; fz = fy;
-                }
-                if (z > 0) {
-                    fz = factorZ*scaleZ;  fx = fz; fy = fz;
-                }
-            }
-
-            mRenderer.scaleObject(fx,fy,fz, true);
-//            ViewerMainFragment.displayModelSize(mObjectPressed);
-            requestRender();
-
-        }
-    }
-	
-
 	
 	/**
 	 * Do rotation (plate rotation, not model rotation)
