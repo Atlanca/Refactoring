@@ -37,7 +37,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/library_models"
         android:title="@string/library_menu_models"
         app:showAsAction="never" />
 
@@ -47,7 +46,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/library_settings"
         android:title="@string/fragment_settings"
         app:showAsAction="never" />
 

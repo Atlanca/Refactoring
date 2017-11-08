@@ -1,14 +1,6 @@
 <resources>
 
     <!-- Navigation drawer -->
-    <style name="NavigationDrawer">
-        <item name="android:layout_width">@dimen/navigation_drawer_width</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@color/almost_white</item>
-        <item name="android:divider">@color/transparent</item>
-        <item name="android:dividerHeight">@dimen/navigation_drawer_divider_height</item>
-        <item name="android:layout_gravity">start</item>
-    </style>
 
     <style name="NavigationDrawerItem" parent="android:TextAppearance">
         <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
@@ -28,12 +20,6 @@
         <item name="android:background">@drawable/separation_line_horizontal</item>
     </style>
 
-    <style name="VerticalSeparator">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:background">@drawable/separation_line_horizontal</item>
-    </style>
-
     <!-- Seek bar -->
     <style name="TallerSeekBar" parent="@android:style/Widget.SeekBar">
         <item name="android:indeterminateOnly">false</item>
@@ -45,12 +31,6 @@
     </style>
 
     <!-- Edit text -->
-    <style name="AdvancedSettingsEditText">
-        <item name="android:textColor">@color/body_text_1_selector</item>
-        <item name="android:layout_width">120dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">5dp</item>
-    </style>
 
     <!-- Material design buttons -->
     <style name="MaterialDesignButton">
@@ -143,16 +123,6 @@
         <item name="android:textColor">@color/body_text_3</item>
     </style>
 
-    <style name="TextBodyDark">
-        <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:textColor">@color/body_text_2</item>
-        <item name="android:lineSpacingMultiplier">1.1</item>
-    </style>
-
-    <style name="TextBodyLight" parent="TextBodyDark">
-        <item name="android:textColor">@color/body_text_3</item>
-    </style>
-
     <style name="TextInfo">
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textStyle">normal</item>
@@ -169,15 +139,6 @@
         <item name="android:textIsSelectable">true</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_margin">3dip</item>
-    </style>
-
-    <style name="SectionHeader">
-        <item name="android:textSize">@dimen/text_size_large</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/body_text_2</item>
-        <item name="android:textIsSelectable">true</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:layout_margin">5dip</item>
     </style>
 
     <style name="NavigationMenuItem" parent="android:TextAppearance">
@@ -254,13 +215,6 @@
     </style>
 
     <!-- Print view action button -->
-    <style name="PrintViewActionButton">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:padding">@dimen/printview_action_button_padding</item>
-        <item name="android:background">@drawable/selectable_oval_background_dark_gray</item>
-    </style>
 
     <!-- Animations -->
 

@@ -55,7 +55,6 @@
 
     <!-- Last modification date -->
     <TextView
-        android:id="@+id/model_mod_date_column_textview"
         style="@style/ModelDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

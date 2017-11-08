@@ -133,21 +133,18 @@
         android:padding="@dimen/content_padding_xsmall">
 
         <ImageView
-            android:id="@+id/wifi_signal_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_signal_wifi_4" />
 
         <TextView
-            android:id="@+id/network_name_textview"
             style="@style/SettingsSectionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hardware test" />
 
         <TextView
-            android:id="@+id/network_status_textview"
             style="@style/SettingsDeviceInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

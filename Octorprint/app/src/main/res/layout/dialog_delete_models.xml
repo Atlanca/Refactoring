@@ -58,14 +58,12 @@
             android:layout_marginRight="@dimen/content_margin_normal">
 
             <ImageView
-                android:id="@+id/file_image_bottom"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:src="@drawable/random"
                 android:visibility="visible"/>
 
             <ImageView
-                android:id="@+id/file_image_medium"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_margin="@dimen/content_margin_small"
@@ -74,7 +72,6 @@
                 android:src="@drawable/random"/>
 
             <ImageView
-                android:id="@+id/file_image_top"
                 android:layout_width="80dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="@dimen/content_margin_normal"
@@ -103,7 +100,6 @@
 
             <TextView
                 style="@style/DialogContent"
-                android:id="@+id/file_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="lorem_ipsum.stl"
