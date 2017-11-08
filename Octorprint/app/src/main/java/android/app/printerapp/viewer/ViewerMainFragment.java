@@ -392,68 +392,6 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-    /**
-     * ********************** OPTIONS MENU *******************************
-     */
-    //Create option menu and inflate viewer menu
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.print_panel_menu, menu);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-
-        switch (item.getItemId()) {
-
-            case R.id.viewer_open:
-                FileBrowser.openFileBrowser(getActivity(), FileBrowser.VIEWER, getString(R.string.choose_file), ".stl", ".gcode");
-                return true;
-
-            case R.id.viewer_restore:
-                optionRestoreView();
-                return true;
-
-            case R.id.viewer_clean:
-
-                optionClean();
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    /**
-     * Restore the original view and discard the modifications by clearing the data list
-     */
-    public void optionRestoreView() {
-
-
-        if (mDataList.size() > 0) {
-            String pathStl = mDataList.get(0).getPathFile();
-            mDataList.clear();
-
-            openFile(pathStl);
-        }
-
-
-    }
-
-    /**
-     * Clean the print panel and delete all references
-     */
-    public static void optionClean() {
-
-        //Delete slicing reference
-        //DatabaseController.handlePreference("Slicing", "Last", null, false);
-
-        mDataList.clear();
-        mFile = null;
-
-    }
 
     /**
      * Open a dialog if it's a GCODE to warn the user about unsaved data loss
@@ -533,7 +471,7 @@ public class ViewerMainFragment extends Fragment {
             data = new DataStorage();
             if (!filePath.contains("/temp")) {
 //                mVisibilityModeButton.setVisibility(View.GONE);
-                optionClean();
+
             }
             mFile = new File(filePath);
             GcodeFile.openGcodeFile(mContext, mFile, data, DONT_SNAPSHOT);
