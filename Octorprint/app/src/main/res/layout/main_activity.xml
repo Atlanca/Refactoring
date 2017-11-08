@@ -66,30 +66,6 @@
                 android:layout_gravity="right|center_vertical" />
         </FrameLayout>
 
-        <!-- The navigation drawer -->
-        <FrameLayout
-            android:layout_width="340dp"
-            android:layout_height="match_parent"
-            android:background="#FFFFFF"
-            android:layout_gravity="start">
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:footerDividersEnabled="false" />
-
-            <TextView
-                style="@style/TextInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="@dimen/content_margin_large"
-                android:text="@string/history_empty_text"
-                android:textSize="@dimen/text_size_xlarge" />
-
-        </FrameLayout>
-
     </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>

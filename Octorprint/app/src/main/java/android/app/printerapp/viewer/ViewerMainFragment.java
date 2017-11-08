@@ -78,16 +78,14 @@ public class ViewerMainFragment extends Fragment {
         //If is not new
         if (savedInstanceState == null) {
 
-            //Show custom option menu
-            setHasOptionsMenu(true);
+//            //Show custom option menu
+//            setHasOptionsMenu(true);
 
             //Inflate the fragment
             mRootView = inflater.inflate(R.layout.print_panel_main,
                     container, false);
 
             mContext = getActivity();
-
-
 
             initUIElements();
 
