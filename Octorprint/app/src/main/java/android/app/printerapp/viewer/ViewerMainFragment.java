@@ -229,66 +229,6 @@ public class ViewerMainFragment extends Fragment {
 
         mLayout = (FrameLayout) mRootView.findViewById(R.id.viewer_container_framelayout);
 
-        mRotationSlider = (CustomEditableSlider) mRootView.findViewById(R.id.print_panel_slider);
-        mRotationSlider.setValue(12);
-        mRotationSlider.setShownValue(0);
-        mRotationSlider.setMax(24);
-        mRotationSlider.setShowNumberIndicator(true);
-        mRotationSlider.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                return false;
-            }
-        });
-        mRotationSlider.setOnValueChangedListener(new CustomEditableSlider.OnValueChangedListener() {
-
-            boolean lock = false;
-
-
-            @Override
-            public void onValueChanged(int i) {
-
-                //Calculation on a 12 point seekbar
-                float newAngle = (i - 12) * POSITIVE_ANGLE;
-
-                mRotationSlider.setShownValue((int)newAngle);
-
-                try {
-
-
-                    if (!lock) {
-
-                        switch (mCurrentAxis) {
-
-                            case 0:
-                                mSurface.rotateAngleAxisX(newAngle);
-                                break;
-                            case 1:
-                                mSurface.rotateAngleAxisY(newAngle);
-                                break;
-                            case 2:
-                                mSurface.rotateAngleAxisZ(newAngle);
-                                break;
-                            default:
-                                return;
-
-                        }
-
-                    }
-
-                    mSurface.requestRender();
-
-
-                } catch (ArrayIndexOutOfBoundsException e) {
-
-                    e.printStackTrace();
-                }
-
-
-            }
-        });
-
         mStatusBottomBar = (LinearLayout) mRootView.findViewById(R.id.model_status_bottom_bar);
         mRotationLayout = (LinearLayout) mRootView.findViewById(R.id.model_button_rotate_bar_linearlayout);
         mScaleLayout  = (LinearLayout) mRootView.findViewById(R.id.model_button_scale_bar_linearlayout);
@@ -480,7 +420,6 @@ public class ViewerMainFragment extends Fragment {
 
 
     }
-
 
     private class ScaleChangeListener implements TextWatcher{
 
