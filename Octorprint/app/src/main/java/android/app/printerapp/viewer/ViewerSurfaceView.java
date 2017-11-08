@@ -338,7 +338,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
         mEdition = true;
         mObjectPressed=i;
         ViewerMainFragment.showActionModePopUpWindow();
-        ViewerMainFragment.displayModelSize(mObjectPressed);
+//        ViewerMainFragment.displayModelSize(mObjectPressed);
 
         touchMode = TOUCH_DRAG;
     }
@@ -400,7 +400,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
                             mEdition = true;
                             mObjectPressed=objPressed;
                             ViewerMainFragment.showActionModePopUpWindow();
-                            ViewerMainFragment.displayModelSize(mObjectPressed);
+//                            ViewerMainFragment.displayModelSize(mObjectPressed);
 
                             Geometry.Point p = mDataList.get(mObjectPressed).getLastCenter();
 
@@ -466,7 +466,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 
                             Log.i("Scale", "Scale touch @" + fx + ";" + fy + ";" + fz);
                             mRenderer.scaleObject(fx,fy,fz, false);
-                            ViewerMainFragment.displayModelSize(mObjectPressed);
+//                            ViewerMainFragment.displayModelSize(mObjectPressed);
 
                         } else {
 
@@ -630,7 +630,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
             }
 
             mRenderer.scaleObject(fx,fy,fz, true);
-            ViewerMainFragment.displayModelSize(mObjectPressed);
+//            ViewerMainFragment.displayModelSize(mObjectPressed);
             requestRender();
 
         }

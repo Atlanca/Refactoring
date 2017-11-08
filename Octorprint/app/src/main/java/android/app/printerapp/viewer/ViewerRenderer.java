@@ -509,7 +509,7 @@ public class ViewerRenderer implements GLSurfaceView.Renderer  {
 			
 			protected void onPostExecute(final Void unused) {
 //				ViewerMainFragment.configureProgressState(View.GONE);
-                ViewerMainFragment.displayModelSize(mObjectPressed);
+//                ViewerMainFragment.displayModelSize(mObjectPressed);
 
 			}		
 		};

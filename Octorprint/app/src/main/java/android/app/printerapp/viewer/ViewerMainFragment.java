@@ -357,40 +357,40 @@ public class ViewerMainFragment extends Fragment {
 
     }
 
-    /**
-     * Change the current rotation axis and update the text accordingly
-     * <p/>
-     * Alberto
-     */
-    public static void changeCurrentAxis(int currentAxis) {
-
-        mCurrentAxis = currentAxis;
-
-        float currentAngle = 12;
-
-        switch (mCurrentAxis) {
-
-            case 0:
-                mRotationSlider.setBackgroundColor(Color.GREEN);
-                break;
-
-            case 1:
-                mRotationSlider.setBackgroundColor(Color.RED);
-                break;
-            case 2:
-                mRotationSlider.setBackgroundColor(Color.BLUE);
-                break;
-            default:
-                mRotationSlider.setBackgroundColor(Color.TRANSPARENT);
-                break;
-
-        }
-
-        mSurface.setRendererAxis(mCurrentAxis);
-
-        mRotationSlider.setValue((int) currentAngle);
-
-    }
+//    /**
+//     * Change the current rotation axis and update the text accordingly
+//     * <p/>
+//     * Alberto
+//     */
+//    public static void changeCurrentAxis(int currentAxis) {
+//
+//        mCurrentAxis = currentAxis;
+//
+//        float currentAngle = 12;
+//
+//        switch (mCurrentAxis) {
+//
+//            case 0:
+//                mRotationSlider.setBackgroundColor(Color.GREEN);
+//                break;
+//
+//            case 1:
+//                mRotationSlider.setBackgroundColor(Color.RED);
+//                break;
+//            case 2:
+//                mRotationSlider.setBackgroundColor(Color.BLUE);
+//                break;
+//            default:
+//                mRotationSlider.setBackgroundColor(Color.TRANSPARENT);
+//                break;
+//
+//        }
+//
+//        mSurface.setRendererAxis(mCurrentAxis);
+//
+//        mRotationSlider.setValue((int) currentAngle);
+//
+//    }
 
 
     /**
@@ -568,7 +568,7 @@ public class ViewerMainFragment extends Fragment {
                     ib.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onActionItemSelected((ImageButton) view);
+//                            onActionItemSelected((ImageButton) view);
                         }
                     });
                 }
@@ -632,196 +632,6 @@ public class ViewerMainFragment extends Fragment {
         } catch (NullPointerException e){
 
         }
-
-    }
-
-    /**
-     * Perform the required action depending on the pressed button
-     *
-     * @param item Action button that has been pressed
-     */
-    public static void onActionItemSelected(final ImageButton item) {
-
-        mStatusBottomBar.setVisibility(View.VISIBLE);
-        mSurface.setRendererAxis(-1);
-        mRotationLayout.setVisibility(View.GONE);
-        mScaleLayout.setVisibility(View.GONE);
-        mBottomBar.setVisibility(View.INVISIBLE);
-//        mSizeText.setVisibility(View.VISIBLE);
-
-        selectActionButton(item.getId());
-
-        switch (item.getId()) {
-            case R.id.move_item_button:
-                hideCurrentActionPopUpWindow();
-                mSurface.setEditionMode(ViewerSurfaceView.MOVE_EDITION_MODE);
-                break;
-            case R.id.rotate_item_button:
-
-                if (mCurrentActionPopupWindow == null) {
-                    final String[] actionButtonsValues = mContext.getResources().getStringArray(R.array.rotate_model_values);
-                    final TypedArray actionButtonsIcons = mContext.getResources().obtainTypedArray(R.array.rotate_model_icons);
-                    showHorizontalMenuPopUpWindow(item, actionButtonsValues, actionButtonsIcons,
-                            null, new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    changeCurrentAxis(Integer.parseInt(actionButtonsValues[position]));
-                                    mBottomBar.setVisibility(View.VISIBLE);
-                                    mRotationLayout.setVisibility(View.VISIBLE);
-                                    mSurface.setEditionMode(ViewerSurfaceView.ROTATION_EDITION_MODE);
-                                    hideCurrentActionPopUpWindow();
-                                    item.setImageResource(actionButtonsIcons.getResourceId(position, -1));
-//                                    mActionImage.setImageDrawable(mContext.getResources().getDrawable(actionButtonsIcons.getResourceId(position, -1)));
-                                }
-                            });
-                } else {
-                    hideCurrentActionPopUpWindow();
-                }
-                break;
-            case R.id.scale_item_button:
-                hideCurrentActionPopUpWindow();
-                mBottomBar.setVisibility(View.VISIBLE);
-                mScaleLayout.setVisibility(View.VISIBLE);
-                mSurface.setEditionMode(ViewerSurfaceView.SCALED_EDITION_MODE);
-//                mActionImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_action_scale));
-                displayModelSize(mSurface.getObjectPresed());
-                break;
-                /*case R.id.mirror:
-                    mSurface.setEditionMode(ViewerSurfaceView.MIRROR_EDITION_MODE);
-                    mSurface.doMirror();
-
-                    slicingCallback();
-                    break;*/
-            case R.id.delete_item_button:
-                hideCurrentActionPopUpWindow();
-                mSurface.deleteObject();
-                hideActionModePopUpWindow();
-                break;
-        }
-
-    }
-
-
-    /**
-     * Set the state of the selected action button
-     *
-     * @param selectedId Id of the action button that has been pressed
-     */
-    public static void selectActionButton(int selectedId) {
-
-        if (mActionModePopupWindow != null) {
-            //Get the content view of the pop up window
-            final LinearLayout popupLayout = (LinearLayout) mActionModePopupWindow.getContentView();
-
-            //Set the behavior of the action buttons
-            for (int i = 0; i < popupLayout.getChildCount(); i++) {
-                View v = popupLayout.getChildAt(i);
-                if (v instanceof ImageButton) {
-                    ImageButton ib = (ImageButton) v;
-                    if (ib.getId() == selectedId)
-                        ib.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.oval_background_green));
-                    else
-                        ib.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.action_button_selector_dark));
-                }
-            }
-        }
-    }
-
-    /**
-     * Show a pop up window with a horizontal list view as a content view
-     */
-    public static void showHorizontalMenuPopUpWindow(View currentView, String[] actionButtonsValues,
-                                                     TypedArray actionButtonsIcons,
-                                                     String selectedOption,
-                                                     AdapterView.OnItemClickListener onItemClickListener) {
-
-        HorizontalListView landscapeList = new HorizontalListView(mContext, null);
-        ListIconPopupWindowAdapter listAdapter = new ListIconPopupWindowAdapter(mContext, actionButtonsValues, actionButtonsIcons, selectedOption);
-        landscapeList.setOnItemClickListener(onItemClickListener);
-        landscapeList.setAdapter(listAdapter);
-
-        landscapeList.measure(0, 0);
-
-        int popupLayoutHeight = 0;
-        int popupLayoutWidth = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View mView = listAdapter.getView(i, null, landscapeList);
-            mView.measure(
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            popupLayoutHeight = mView.getMeasuredHeight();
-            popupLayoutWidth += mView.getMeasuredWidth();
-        }
-
-        //Show the pop up window in the correct position
-        int[] actionButtonCoordinates = new int[2];
-        currentView.getLocationOnScreen(actionButtonCoordinates);
-        int popupLayoutPadding = (int) mContext.getResources().getDimensionPixelSize(R.dimen.content_padding_normal);
-        final int popupLayoutX = actionButtonCoordinates[0] - popupLayoutWidth - popupLayoutPadding / 2;
-        final int popupLayoutY = actionButtonCoordinates[1];
-
-        mCurrentActionPopupWindow = (new CustomPopupWindow(landscapeList, popupLayoutWidth,
-                popupLayoutHeight + popupLayoutPadding, R.style.SlideRightAnimation).getPopupWindow());
-
-        mCurrentActionPopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY, popupLayoutX, popupLayoutY);
-    }
-
-    /**
-     * Display model width, depth and height when touched
-     */
-    public static void displayModelSize(int position) {
-        try {
-            //TODO RANDOM CRASH ArrayIndexOutOfBoundsException
-            DataStorage data = mDataList.get(position);
-
-            //Set point instead of comma
-            DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-            otherSymbols.setDecimalSeparator('.');
-            otherSymbols.setGroupingSeparator(',');
-
-            //Define new decimal format to display only 2 decimals
-            DecimalFormat df = new DecimalFormat("##.##", otherSymbols);
-
-            String width = df.format((data.getMaxX() - data.getMinX()));
-            String depth = df.format((data.getMaxY() - data.getMinY()));
-            String height = df.format((data.getMaxZ() - data.getMinZ()));
-
-            Log.i("Scale","Vamos a petar " + width);
-
-            if (mScaleLayout.getVisibility() == View.VISIBLE){
-
-                mScaleEditX.removeTextChangedListener(mTextWatcherX);
-                mScaleEditY.removeTextChangedListener(mTextWatcherY);
-                mScaleEditZ.removeTextChangedListener(mTextWatcherZ);
-
-                mScaleEditX.setText(width);
-                mScaleEditX.setSelection(mScaleEditX.getText().length());
-                mScaleEditY.setText(depth);
-                mScaleEditY.setSelection(mScaleEditY.getText().length());
-                mScaleEditZ.setText(height);
-                mScaleEditZ.setSelection(mScaleEditZ.getText().length());
-
-                mScaleEditX.addTextChangedListener(mTextWatcherX);
-                mScaleEditY.addTextChangedListener(mTextWatcherY);
-                mScaleEditZ.addTextChangedListener(mTextWatcherZ);
-            }
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-
-            e.printStackTrace();
-        }
-
-
-    }
-
-    /**
-     * Notify the side panel adapters, check for null if they're not available yet (rare case)
-     */
-
-    //Refresh printers when the fragmetn is shown
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
 
     }
 
