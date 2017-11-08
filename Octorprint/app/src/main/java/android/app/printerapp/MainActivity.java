@@ -4,35 +4,19 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.printerapp.devices.database.DatabaseController;
-import android.app.printerapp.library.LibraryController;
 import android.app.printerapp.library.LibraryFragment;
 import android.app.printerapp.library.detail.DetailViewFragment;
 import android.app.printerapp.util.ui.AnimationHelper;
 import android.app.printerapp.viewer.ViewerMainFragment;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by alberto-baeza on 1/21/15.
@@ -110,12 +94,6 @@ public class MainActivity extends ActionBarActivity {
         spec.setContent(R.id.maintab2);
         mTabHost.addTab(spec);
 
-        //Print view tab
-        spec = mTabHost.newTabSpec("Printer");
-        spec.setIndicator(getTabIndicator(getResources().getString(R.string.fragment_devices)));
-        spec.setContent(R.id.maintab3);
-        //mTabHost.addTab(spec);
-
         if (DatabaseController.count() > 0){
             mTabHost.setCurrentTab(0);
             onItemSelected(0);
@@ -157,10 +135,6 @@ public class MainActivity extends ActionBarActivity {
 
     public void onItemSelected(int id) {
 
-        if (id!= 1) {
-
-        }
-
         Log.i("OUT", "Pressed " + id);
         //start transaction
         FragmentTransaction fragmentTransaction = mManager.beginTransaction();
@@ -201,9 +175,6 @@ public class MainActivity extends ActionBarActivity {
                 mCurrent = mViewerFragment;
             }
             break;
-            case 2: {
-                break;
-            }
         }
             if (mViewerFragment != null) {
                 if (mCurrent != mViewerFragment) {
@@ -228,11 +199,6 @@ public class MainActivity extends ActionBarActivity {
         //Refresh printview fragment if exists
         Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DETAIL);
         if (fragment != null) ((DetailViewFragment) fragment).removeRightPanel();
-    }
-
-    //Show dialog
-    public static void showDialog(String msg) {
-        mDialog.displayDialog(msg);
     }
 
     /**

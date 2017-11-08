@@ -340,15 +340,7 @@ public class ViewerSurfaceView extends GLSurfaceView{
 		//mRenderer.setCenterY(-1);
         mRenderer.matrixTranslate(dx,-dy,0);
 	}
-	
-	/**
-	 * Movement mode (plate)
-	 * @param mode
-	 */
-	public void setMovementMode (int mode) {
-		mMovementMode = mode;
-	}
-	
+
 	/**
 	 * Get distanced pinched
 	 * @param event

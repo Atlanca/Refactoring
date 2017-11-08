@@ -175,10 +175,4 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-
-
-    public void notifyAdapter() {
-        Fragment fragment = mManager.findFragmentByTag(ListContent.ID_DEVICES_SETTINGS);
-    }
-
 }

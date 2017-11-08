@@ -12,7 +12,6 @@
     <string name="warning">Aviso</string>
     <string name="dialog_continue">Continuar</string>
 
-    <string name="fragment_devices">Impresoras</string>
     <string name="fragment_print">Panel</string>
     <string name="fragment_models">Modelos</string>
     <string name="fragment_settings">Ajustes</string>

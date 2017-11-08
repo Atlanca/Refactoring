@@ -109,28 +109,6 @@ public class LibraryController {
 		mCurrentPath = path;
 	}
 	
-	//Retrieve only files from the individual printers
-	public static void retrievePrinterFiles(Long id){
-		
-		mFileList.clear();
-		
-		//Set the current path pointing to a printer so we can go back
-		mCurrentPath = new File("printer/" + id);
-	}
-	
-	//Retrieve favorites
-	public static void retrieveFavorites(){
-
-		
-		for (Map.Entry<String, ?> entry : DatabaseController.getPreferences(DatabaseController.TAG_FAVORITES).entrySet()){
-			
-			ModelFile m = new ModelFile(entry.getValue().toString(), "favorite");
-			mFileList.add(m);
-			
-		}
-		
-	}
-	
 	//Retrieve main folder or create if doesn't exist
 	//TODO: Changed main folder to FILES folder.
 	public static File getParentFolder(){
@@ -292,74 +270,4 @@ public class LibraryController {
 
     }
 
-    /*
-    Calculates a file SHA1 hash
-     */
-    public static String calculateHash(File file){
-
-        String hash = "";
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA1");
-
-            FileInputStream fis = new FileInputStream(file);
-            byte[] dataBytes = new byte[1024];
-
-            int nread = 0;
-
-            while ((nread = fis.read(dataBytes)) != -1) {
-                md.update(dataBytes, 0, nread);
-            };
-
-            byte[] mdbytes = md.digest();
-
-            //convert the byte to hex format
-            StringBuffer sb = new StringBuffer("");
-            for (int i = 0; i < mdbytes.length; i++) {
-                sb.append(Integer.toString((mdbytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-
-            hash = sb.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return hash;
-
-    }
-
-    /****************************** HISTORY ****************************************/
-
-    public static ArrayList<ListContent.DrawerListItem> getHistoryList(){ return mHistoryList; }
-
-    public static void initializeHistoryList(){
-
-        mHistoryList.clear();
-
-        Cursor ch = DatabaseController.retrieveHistory();
-        ch.moveToFirst();
-
-
-        while (!ch.isAfterLast()) {
-
-            ListContent.DrawerListItem item = new ListContent.DrawerListItem(ch.getString(3), ch.getString(0), ch.getString(2), ch.getString(4), ch.getString(1));
-
-            addToHistory(item);
-            ch.moveToNext();
-        }
-
-        DatabaseController.closeDb();
-    }
-
-    public static void addToHistory(ListContent.DrawerListItem item){
-
-        mHistoryList.add(0,item);
-
-    }
 }

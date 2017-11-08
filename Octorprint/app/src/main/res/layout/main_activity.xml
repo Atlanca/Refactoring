@@ -54,13 +54,6 @@
                             android:background="@color/pager_background"
                             android:orientation="vertical"></LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/maintab3"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/pager_background"
-                            android:orientation="vertical"></LinearLayout>
-
                     </FrameLayout>
                 </LinearLayout>
             </TabHost>
