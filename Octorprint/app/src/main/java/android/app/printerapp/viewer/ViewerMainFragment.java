@@ -865,10 +865,6 @@ public class ViewerMainFragment extends Fragment {
 
                     slicingCallback();
                     break;*/
-            case R.id.multiply_item_button:
-                hideCurrentActionPopUpWindow();
-                showMultiplyDialog();
-                break;
             case R.id.delete_item_button:
                 hideCurrentActionPopUpWindow();
                 mSurface.deleteObject();
@@ -941,101 +937,6 @@ public class ViewerMainFragment extends Fragment {
                 popupLayoutHeight + popupLayoutPadding, R.style.SlideRightAnimation).getPopupWindow());
 
         mCurrentActionPopupWindow.showAtLocation(mSurface, Gravity.NO_GRAVITY, popupLayoutX, popupLayoutY);
-    }
-
-    /**
-     * ********************** MULTIPLY ELEMENTS *******************************
-     */
-
-    public static void showMultiplyDialog() {
-        View multiplyModelDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_multiply_model, null);
-        final NumberPicker numPicker = (NumberPicker) multiplyModelDialog.findViewById(R.id.number_copies_numberpicker);
-        numPicker.setMaxValue(10);
-        numPicker.setMinValue(0);
-
-        final int count = numPicker.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = numPicker.getChildAt(i);
-            if (child instanceof EditText) {
-                try {
-                    Field selectorWheelPaintField = numPicker.getClass()
-                            .getDeclaredField("mSelectorWheelPaint");
-                    selectorWheelPaintField.setAccessible(true);
-                    ((Paint) selectorWheelPaintField.get(numPicker)).setColor(mContext.getResources().getColor(R.color.theme_primary_dark));
-                    ((EditText) child).setTextColor(mContext.getResources().getColor(R.color.theme_primary_dark));
-
-                    Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-                    for (Field pf : pickerFields) {
-                        if (pf.getName().equals("mSelectionDivider")) {
-                            pf.setAccessible(true);
-                            try {
-                                pf.set(numPicker, mContext.getResources().getDrawable(R.drawable.separation_line_horizontal));
-                            } catch (IllegalArgumentException e) {
-                                e.printStackTrace();
-                            } catch (Resources.NotFoundException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        }
-                    }
-
-                    numPicker.invalidate();
-                } catch (NoSuchFieldException e) {
-                    Log.w("setNumberPickerTextColor", e.toString());
-                } catch (IllegalAccessException e) {
-                    Log.w("setNumberPickerTextColor", e.toString());
-                } catch (IllegalArgumentException e) {
-                    Log.w("setNumberPickerTextColor", e.toString());
-                }
-            }
-        }
-
-        //Remove soft-input from number picker
-        numPicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(mContext);
-        createFolderDialog.title(R.string.viewer_menu_multiply_title)
-                .customView(multiplyModelDialog, true)
-                .positiveColorRes(R.color.theme_accent_1)
-                .positiveText(R.string.dialog_continue)
-                .negativeColorRes(R.color.body_text_2)
-                .negativeText(R.string.cancel)
-                .autoDismiss(true)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        drawCopies(numPicker.getValue());
-                    }
-                })
-                .show();
-
-    }
-
-    private static void drawCopies(int numCopies) {
-        int model = mSurface.getObjectPresed();
-        int num = 0;
-
-        while (num < numCopies) {
-            final DataStorage newData = new DataStorage();
-            newData.copyData(mDataList.get(model));
-            mDataList.add(newData);
-
-            /**
-             * Check if the piece is out of the plate and stop multiplying
-             */
-            if (!Geometry.relocateIfOverlaps(mDataList)) {
-
-                Toast.makeText(mContext, R.string.viewer_multiply_error, Toast.LENGTH_LONG).show();
-                mDataList.remove(newData);
-                break;
-
-            }
-
-            num++;
-        }
-
-        draw();
     }
 
     /**
