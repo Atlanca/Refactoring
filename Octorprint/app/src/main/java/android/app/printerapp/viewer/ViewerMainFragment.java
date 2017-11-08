@@ -412,10 +412,6 @@ public class ViewerMainFragment extends Fragment {
                 FileBrowser.openFileBrowser(getActivity(), FileBrowser.VIEWER, getString(R.string.choose_file), ".stl", ".gcode");
                 return true;
 
-            case R.id.viewer_save:
-                saveNewProject();
-                return true;
-
             case R.id.viewer_restore:
                 optionRestoreView();
                 return true;
@@ -583,113 +579,6 @@ public class ViewerMainFragment extends Fragment {
 //      mLayout.addView(mEditionLayout, 2);
     }
 
-    /**
-     * ********************** SAVE FILE *******************************
-     */
-    private void saveNewProject() {
-        View createProjectDialog = LayoutInflater.from(mContext).inflate(R.layout.dialog_save_model, null);
-        final EditText proyectNameText = (EditText) createProjectDialog.findViewById(R.id.model_name_textview);
-
-        final RadioGroup radioGroup = (RadioGroup) createProjectDialog.findViewById(R.id.save_mode_radiogroup);
-
-        proyectNameText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                proyectNameText.setError(null);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //do nothing
-            }
-        });
-
-        String dialogTitle;
-
-        if (mFile != null)
-            dialogTitle = getString(R.string.save) + " - " + mFile.getName();
-        else
-            dialogTitle = getString(R.string.save);
-
-        final MaterialDialog.Builder createFolderDialog = new MaterialDialog.Builder(getActivity());
-        createFolderDialog.title(dialogTitle)
-                .customView(createProjectDialog, true)
-                .positiveColorRes(R.color.theme_accent_1)
-                .positiveText(R.string.save)
-                .negativeColorRes(R.color.body_text_2)
-                .negativeText(R.string.discard)
-                .autoDismiss(false)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-
-                        int selected = radioGroup.getCheckedRadioButtonId();
-
-                        switch (selected) {
-
-                            case R.id.save_model_stl_checkbox:
-
-                                if (mFile != null) {
-                                    if (LibraryController.hasExtension(0, mFile.getName())) {
-                                        if (StlFile.checkIfNameExists(proyectNameText.getText().toString()))
-                                            proyectNameText.setError(mContext.getString(R.string.proyect_name_not_available));
-                                        else {
-                                            if (StlFile.saveModel(mDataList, proyectNameText.getText().toString()))
-                                                dialog.dismiss();
-                                            else {
-                                                Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-                                                dialog.dismiss();
-                                            }
-                                        }
-                                    } else {
-                                        Toast.makeText(mContext, R.string.devices_toast_no_stl, Toast.LENGTH_SHORT).show();
-                                        dialog.dismiss();
-                                    }
-                                } else {
-
-                                    Toast.makeText(mContext, R.string.error_saving_invalid_model, Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
-                                }
-
-                                break;
-
-                            case R.id.save_model_gcode_checkbox:
-
-                        break;
-
-                        case R.id.save_model_overwrite_checkbox:
-
-                        Toast.makeText(getActivity(), R.string.option_unavailable, Toast.LENGTH_SHORT).show();
-
-                        dialog.dismiss();
-
-                        break;
-
-                        default:
-
-                        dialog.dismiss();
-
-                        break;
-
-                    }
-
-                }
-
-        @Override
-                    public void onNegative(MaterialDialog dialog) {
-                        dialog.cancel();
-                        dialog.dismiss();
-                    }
-
-                })
-                .show();
-
-    }
     /**
      * ********************** SURFACE CONTROL *******************************
      */
